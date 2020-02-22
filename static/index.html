@@ -1,0 +1,67 @@
+<script>
+    function request(url, type, params) {
+        return new Promise(function (resolve, reject) {
+            let xhr = new XMLHttpRequest();
+            type = type.toLowerCase();
+            type = (type == "post" ? "post" : "get");
+            if (type == "get") {
+                params = Object.keys(params).map(function (k) {
+                    return encodeURIComponent(k) + '=' + encodeURIComponent(params[k])
+                }).join('&');
+            }
+            xhr.open(type, url + (type == "post" ? "" : ("?" + params)), true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == XMLHttpRequest.DONE && xhr.status >= 400) {
+                    let ress = xhr.response;
+                    if (typeof res.errorCode !== 'undefined') {
+                        reject(new Error('Something went wrong...'));
+                    }
+                }
+                if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
+                    let res = xhr.response;
+                    resolve(res);
+                }
+                if (xhr.readyState == 2) {
+                }
+            }
+            xhr.onload = function () {
+                let res = xhr.response;
+                resolve(res);
+            };
+            xhr.onerror = function () {
+                reject(new Error('error'));
+            };
+            body = JSON.stringify({ params });
+            xhr.send(body);
+        }).then(data => {
+            return (JSON.parse(data));
+        });
+    }
+    function submit() {
+        request("/api", "POST", { text: document.querySelectorAll("textarea")[0].value }).then(value => {
+            document.querySelectorAll("textarea")[1].value = value.keywords.toString().replace(/,/gi, "\n");
+        });
+    }
+</script>
+<style>
+    textarea {
+        width: 100%;
+        max-width: 100%;
+    }
+</style>
+Input Text:
+<br />
+<textarea rows="5">
+</textarea>
+<br />
+<br />
+<button onclick="submit()">
+    Submit
+</button>
+<br />
+<br />
+Result:
+<br />
+<textarea rows="5">
+</textarea>
