@@ -1,6 +1,7 @@
 #!flask/bin/python
 from flask import Flask, request, jsonify
 import json
+import os
 import blanksort
 
 app = Flask(__name__, static_url_path="")
@@ -15,6 +16,15 @@ def index():
 def returnPost():
     data = request.get_json()["params"]
     return jsonify({"keywords": algo.rank(data["text"])})
+
+
+@app.route("/articles", methods=["GET"])
+def getArticles():
+    with open(
+        "C:\\Users\\kento\\Documents\\GitHub\\BlankSort-Demo\\articles.json"
+    ) as json_file:
+        data = json.load(json_file)
+        return jsonify(data)
 
 
 if __name__ == "__main__":

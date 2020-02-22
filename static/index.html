@@ -39,9 +39,34 @@
         });
     }
     function submit() {
+        document.querySelectorAll("textarea")[1].value = "Loading...";
         request("/api", "POST", { text: document.querySelectorAll("textarea")[0].value }).then(value => {
             document.querySelectorAll("textarea")[1].value = value.keywords.toString().replace(/,/gi, "\n");
+            if (document.querySelectorAll("textarea")[1].textContent == "") {
+                document.querySelectorAll("textarea")[1].value = "No results";
+            }
         });
+    }
+    function chooseArticle(i) {
+        document.querySelectorAll("textarea")[0].value = articles[i].text;
+    }
+    window.onload = () => {
+        request("/articles", "GET", {}).then(res => {
+            window.articles = res.articles;
+            res.articles.forEach((article, i) => {
+                var elem = document.getElementById("articles");
+                elem.innerHTML += `
+                    <button onclick="chooseArticle(${i});">Load</button>
+                    <a id="link${i}" target="_blank"><span id="title${i}"></span></a>
+                    <br />
+                `;
+                document.getElementById(`title${i}`).textContent = article.title;
+                document.getElementById(`link${i}`).href = article.source;
+            });
+        });
+    }
+    function clearBox() {
+        document.querySelectorAll("textarea")[0].value = "";
     }
 </script>
 <style>
@@ -51,17 +76,27 @@
     }
 </style>
 Input Text:
-<br />
-<textarea rows="5">
+<button onclick=" clearBox()">
+    Clear
+</button>
+<textarea rows="15">
 </textarea>
 <br />
 <br />
 <button onclick="submit()">
-    Submit
+    Run Extraction
 </button>
 <br />
 <br />
 Result:
 <br />
 <textarea rows="5">
+Waiting for input.
 </textarea>
+<br />
+<br />
+Articles:
+<br />
+<br />
+<div id="articles">
+</div>
