@@ -39,16 +39,16 @@
         });
     }
     function submit() {
-        document.querySelectorAll("textarea")[1].value = "Loading...";
-        request("/api", "POST", { text: document.querySelectorAll("textarea")[0].value }).then(value => {
-            document.querySelectorAll("textarea")[1].value = value.keywords.toString().replace(/,/gi, "\n");
-            if (document.querySelectorAll("textarea")[1].textContent == "") {
-                document.querySelectorAll("textarea")[1].value = "No results";
+        document.getElementById("output").value = "Loading...";
+        request("/api", "POST", { text: document.getElementById("input").value }).then(value => {
+            document.getElementById("output").value = value.keywords.toString().replace(/,/gi, "\n");
+            if (document.getElementById("output").textContent == "") {
+                document.getElementById("output").value = "No results";
             }
         });
     }
     function chooseArticle(i) {
-        document.querySelectorAll("textarea")[0].value = articles[i].text;
+        document.getElementById("input").value = articles[i].text;
     }
     window.onload = () => {
         request("/articles", "GET", {}).then(res => {
@@ -57,7 +57,7 @@
                 var elem = document.getElementById("articles");
                 elem.innerHTML += `
                     <button onclick="chooseArticle(${i});">Load</button>
-                    <a id="link${i}" target="_blank"><span id="title${i}"></span></a>
+                    <span id="title${i}"></span> [<a id="link${i}" target="_blank">source</a>]
                     <br />
                 `;
                 document.getElementById(`title${i}`).textContent = article.title;
@@ -66,37 +66,72 @@
         });
     }
     function clearBox() {
-        document.querySelectorAll("textarea")[0].value = "";
+        document.getElementById("input").value = "";
     }
 </script>
 <style>
     textarea {
         width: 100%;
         max-width: 100%;
+        background-color: #181a1b;
+        color: white;
+        max-height: 75vh;
+        min-height: 5vh;
+        min-width: 100%;
+    }
+
+    #left {
+        float: left;
+    }
+
+    #right {
+        float: right;
+    }
+
+    .panel {
+        width: 47.5%;
+    }
+
+    body {
+        background-color: #181a1b !important;
+        color: white;
+    }
+
+    button {
+        background-color: #181a1b;
+        color: white;
+        border-color: #575757;
+    }
+
+    #articles a {
+        color: #3391ff;
     }
 </style>
-Input Text:
-<button onclick=" clearBox()">
-    Clear
-</button>
-<textarea rows="15">
+<div id="left" class="panel">
+    Input Text:
+    <button onclick=" clearBox()">
+        Clear
+    </button>
+    <br />
+    <br />
+    <textarea rows="15" id="input">
 </textarea>
-<br />
-<br />
-<button onclick="submit()">
-    Run Extraction
-</button>
-<br />
-<br />
-Result:
-<br />
-<textarea rows="5">
-Waiting for input.
-</textarea>
-<br />
-<br />
-Articles:
-<br />
-<br />
-<div id="articles">
+    <br />
+    <br />
+    <button onclick="submit()">
+        Run Extraction
+    </button>
+</div>
+<div id="right" class="panel">
+    Result:
+    <br />
+    <br />
+    <textarea rows="5" id="output" readonly>Waiting for input.</textarea>
+    <br />
+    <br />
+    Articles:
+    <br />
+    <br />
+    <div id="articles">
+    </div>
 </div>
