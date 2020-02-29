@@ -42,7 +42,7 @@
         document.getElementById("output").value = "Loading...";
         request("/api", "POST", { text: document.getElementById("input").value }).then(value => {
             document.getElementById("output").value = value.keywords.toString().replace(/,/gi, "\n");
-            if (document.getElementById("output").textContent == "") {
+            if (document.getElementById("output").value == "") {
                 document.getElementById("output").value = "No results";
             }
         });
@@ -56,9 +56,14 @@
             res.articles.forEach((article, i) => {
                 var elem = document.getElementById("articles");
                 elem.innerHTML += `
-                    <button onclick="chooseArticle(${i});">Load</button>
-                    <span id="title${i}"></span> [<a id="link${i}" target="_blank">source</a>]
-                    <br />
+                    <div class="article">
+                        <button onclick="chooseArticle(${i});">Load</button>
+                        <span class="articleTitle">
+                            <span id="title${i}"></span>
+                            [<a id="link${i}" target="_blank">source</a>]
+                        </span>
+                        <br />
+                    </div>
                 `;
                 document.getElementById(`title${i}`).textContent = article.title;
                 document.getElementById(`link${i}`).href = article.source;
@@ -72,12 +77,11 @@
 <style>
     textarea {
         width: 100%;
-        max-width: 100%;
+        resize: none;
         background-color: #181a1b;
         color: white;
-        max-height: 75vh;
         min-height: 5vh;
-        min-width: 100%;
+        font-size: 1.5em;
     }
 
     #left {
@@ -89,6 +93,7 @@
     }
 
     .panel {
+        position: relative;
         width: 47.5%;
     }
 
@@ -101,37 +106,124 @@
         background-color: #181a1b;
         color: white;
         border-color: #575757;
+        background-color: #4CAF50;
+        height: 5vh;
+        border: none;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        font-size: 1.5em;
+        border-radius: 2px;
+        margin-left: 5px;
+        margin-right: 5px;
     }
 
     #articles a {
         color: #3391ff;
     }
+
+    #listWrapper {
+        overflow-y: auto;
+    }
+
+    .leftInput {
+        height: 90%;
+    }
+
+    body {
+        font-size: 1em;
+    }
+
+    .header {
+        font-size: 1.5em;
+        display: -webkit-flex;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .controls {
+        height: 10vh;
+        vertical-align: middle;
+        text-align: center;
+    }
+
+    .topRight {
+        height: fit-content;
+        text-align: center;
+        vertical-align: middle;
+        height: 50vh;
+    }
+
+    .padded {
+        padding: 1vh;
+    }
+
+    * {
+        font-family: Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif;
+    }
+
+    .article {
+        display: flex;
+        align-items: center;
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+
+    .articleTitle {
+        padding: 10px;
+        font-size: 1.25em;
+    }
+
+    #output {
+        text-align: center;
+        display: inline-block;
+        vertical-align: middle;
+        outline: none;
+    }
+
+    .listWrapper {
+        overflow-y: auto;
+        height: 40vh;
+    }
+
+    .bordered {
+        border: 2px solid gray;
+        border-radius: 5px;
+    }
+
+    .bottomRight {
+        height: calc(50vh - 18px);
+    }
 </style>
-<div id="left" class="panel">
-    Input Text:
-    <button onclick=" clearBox()">
-        Clear
-    </button>
-    <br />
-    <br />
-    <textarea rows="15" id="input">
+
+<body>
+    <div id="left" class="panel">
+        <div class="controls">
+            <span class="header">Input Text:</span>
+            <button onclick=" clearBox()">
+                Clear
+            </button>
+            <button onclick="submit()">
+                Run Extraction
+            </button>
+        </div>
+        <textarea id="input" class="leftInput bordered" placeholder="Type your text here!">
 </textarea>
-    <br />
-    <br />
-    <button onclick="submit()">
-        Run Extraction
-    </button>
-</div>
-<div id="right" class="panel">
-    Result:
-    <br />
-    <br />
-    <textarea rows="5" id="output" readonly>Waiting for input.</textarea>
-    <br />
-    <br />
-    Articles:
-    <br />
-    <br />
-    <div id="articles">
     </div>
-</div>
+    <div id="right" class="panel">
+        <div class="topRight">
+            <span class="header padded">Result:</span>
+            <textarea rows="5" id="output" readonly class="bordered">Waiting for input.</textarea>
+        </div>
+        <div class="bottomRight bordered">
+            <span class="header padded">Articles:</span>
+            <div class="listWrapper">
+                <span id="articles">
+                </span>
+            </div>
+        </div>
+    </div>
+</body>
