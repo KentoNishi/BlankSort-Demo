@@ -5,6 +5,7 @@ import os
 import blanksort
 
 app = Flask(__name__, static_url_path="")
+algo = None
 
 
 @app.route("/")
@@ -27,8 +28,14 @@ def getArticles():
         return jsonify(data)
 
 
-if __name__ == "__main__":
+@app.before_first_request
+def preload():
+    global algo
     algo = blanksort.BlankSort(
         "C:\\Users\\kento\\Documents\\GitHub\\BlankSort-Prototypes\\binaries\\data"
     )
+
+
+if __name__ == "__main__":
+    preload()
     app.run(host="0.0.0.0")

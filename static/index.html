@@ -39,11 +39,11 @@
         });
     }
     function submit() {
-        document.getElementById("output").value = "Loading...";
-        request("/api", "POST", { text: document.getElementById("input").value }).then(value => {
-            document.getElementById("output").value = value.keywords.toString().replace(/,/gi, "\n");
-            if (document.getElementById("output").value == "") {
-                document.getElementById("output").value = "No results";
+        document.getElementById("output").innerText = "Loading...";
+        request("/api", "POST", { text: document.getElementById("input").value }).then(data => {
+            document.getElementById("output").innerText = data.keywords.toString().replace(/,/gi, "\n");
+            if (document.getElementById("output").innerText == "") {
+                document.getElementById("output").innerText = "No results";
             }
         });
     }
@@ -65,23 +65,43 @@
                         <br />
                     </div>
                 `;
-                document.getElementById(`title${i}`).textContent = article.title;
+                document.getElementById(`title${i}`).innerText = article.title;
                 document.getElementById(`link${i}`).href = article.source;
             });
         });
+        document.getElementById("input").oninput = event => {
+            if (event.target.innerHTML.trim() === '<br>') {
+                event.target.innerHTML = "";
+            }
+        }
     }
     function clearBox() {
         document.getElementById("input").value = "";
+        document.getElementById("output").innerText = "";
     }
 </script>
 <style>
-    textarea {
+    .textarea {
         width: 100%;
         resize: none;
         background-color: #181a1b;
         color: white;
         min-height: 5vh;
-        font-size: 1.5em;
+        font-size: 2.5vh;
+        overflow: auto;
+        overflow-x: hidden;
+        padding: 10px;
+    }
+
+    .displayArea {
+        overflow: auto;
+        height: calc(50vh - 2vh - 2.5vh - 2.25vh);
+        background-color: #181a1b;
+        color: white;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        border-top: 2px solid gray;
     }
 
     #left {
@@ -94,7 +114,7 @@
 
     .panel {
         position: relative;
-        width: 47.5%;
+        width: calc(50% - 0.325vh);
     }
 
     body {
@@ -114,7 +134,7 @@
         display: inline-block;
         margin-top: 5px;
         margin-bottom: 5px;
-        font-size: 1.5em;
+        font-size: 2.5vh;
         border-radius: 2px;
         margin-left: 5px;
         margin-right: 5px;
@@ -124,20 +144,16 @@
         color: #3391ff;
     }
 
-    #listWrapper {
-        overflow-y: auto;
-    }
-
     .leftInput {
         height: 90%;
     }
 
     body {
-        font-size: 1em;
+        font-size: 1.75vh;
     }
 
     .header {
-        font-size: 1.5em;
+        font-size: 2.5vh;
         display: -webkit-flex;
         display: flex;
         align-items: center;
@@ -146,15 +162,9 @@
 
     .controls {
         height: 10vh;
-        vertical-align: middle;
-        text-align: center;
-    }
-
-    .topRight {
-        height: fit-content;
-        text-align: center;
-        vertical-align: middle;
-        height: 50vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .padded {
@@ -174,7 +184,7 @@
 
     .articleTitle {
         padding: 10px;
-        font-size: 1.25em;
+        font-size: 2vh;
     }
 
     #output {
@@ -182,20 +192,36 @@
         display: inline-block;
         vertical-align: middle;
         outline: none;
-    }
-
-    .listWrapper {
         overflow-y: auto;
-        height: 40vh;
     }
 
     .bordered {
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
         border: 2px solid gray;
-        border-radius: 5px;
+        border-radius: 2px;
+    }
+
+    .halfPanel {
+        height: calc(50% - 0.25vh);
+        width: 100%;
+    }
+
+    .topRight {
+        top: 0;
     }
 
     .bottomRight {
-        height: calc(50vh - 18px);
+        bottom: 0;
+        margin-top: 0.75vh;
+    }
+
+    [contenteditable][placeholder]:empty:before {
+        content: attr(placeholder);
+        position: absolute;
+        color: gray;
+        background-color: transparent;
     }
 </style>
 
@@ -210,17 +236,18 @@
                 Run Extraction
             </button>
         </div>
-        <textarea id="input" class="leftInput bordered" placeholder="Type your text here!">
-</textarea>
+        <textarea id="input" class="textarea leftInput bordered" placeholder="Type your text here!"></textarea>
     </div>
     <div id="right" class="panel">
-        <div class="topRight">
+        <div class="topRight bordered halfPanel">
             <span class="header padded">Result:</span>
-            <textarea rows="5" id="output" readonly class="bordered">Waiting for input.</textarea>
+            <div id="output" class="displayArea textarea">
+                Waiting for input.
+            </div>
         </div>
-        <div class="bottomRight bordered">
+        <div class="bottomRight bordered halfPanel">
             <span class="header padded">Articles:</span>
-            <div class="listWrapper">
+            <div class="displayArea">
                 <span id="articles">
                 </span>
             </div>
