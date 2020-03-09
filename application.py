@@ -2,7 +2,6 @@
 from flask import Flask, request, jsonify
 import json
 import os
-import blanksort
 
 app = Flask(__name__, static_url_path="")
 algo = None
@@ -15,6 +14,7 @@ def index():
 
 @app.route("/api", methods=["POST"])
 def returnPost():
+    preload()
     data = request.get_json()["params"]
     return jsonify({"keywords": algo.rank(data["text"])})
 
@@ -26,14 +26,15 @@ def getArticles():
         return jsonify(data)
 
 
-@app.before_first_request
+# @app.before_first_request
 def preload():
     global algo
+    import blanksort
+
     algo = blanksort.BlankSort(
         "C:\\Users\\kento\\Documents\\GitHub\\BlankSort-Prototypes\\binaries\\data"
     )
 
 
 if __name__ == "__main__":
-    preload()
     app.run()
