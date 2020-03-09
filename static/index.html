@@ -11,6 +11,7 @@
             }
             xhr.open(type, url + (type == "post" ? "" : ("?" + params)), true);
             xhr.setRequestHeader('Content-Type', 'application/json');
+            // xhr.setRequestHeader('Authorization', 'token TOKEN');
             xhr.onreadystatechange = function () {
                 if (xhr.readyState == XMLHttpRequest.DONE && xhr.status >= 400) {
                     let ress = xhr.response;

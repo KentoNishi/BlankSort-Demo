@@ -21,9 +21,7 @@ def returnPost():
 
 @app.route("/articles", methods=["GET"])
 def getArticles():
-    with open(
-        "C:\\Users\\kento\\Documents\\GitHub\\BlankSort-Demo\\articles.json"
-    ) as json_file:
+    with open("articles.json") as json_file:
         data = json.load(json_file)
         return jsonify(data)
 
@@ -38,4 +36,4 @@ def preload():
 
 if __name__ == "__main__":
     preload()
-    app.run(host="0.0.0.0")
+    app.run()
