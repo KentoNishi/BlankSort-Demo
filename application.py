@@ -31,9 +31,7 @@ def preload():
     global algo
     import blanksort
 
-    algo = blanksort.BlankSort(
-        "C:\\Users\\kento\\Documents\\GitHub\\BlankSort-Prototypes\\binaries\\data"
-    )
+    algo = blanksort.BlankSort()
 
 
 if __name__ == "__main__":
