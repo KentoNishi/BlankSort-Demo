@@ -42,7 +42,12 @@
     function submit() {
         document.getElementById("output").innerText = "Loading...";
         request("/api", "POST", { text: document.getElementById("input").value }).then(data => {
-            document.getElementById("output").innerText = data.keywords.toString().replace(/,/gi, "\n");
+            var words = data.keywords.toString().split(",");
+            var allWords = "";
+            words.forEach((word, i) => {
+                allWords += (i + 1) + ". " + word + "\n";
+            });
+            document.getElementById("output").innerText = allWords;
             if (document.getElementById("output").innerText == "") {
                 document.getElementById("output").innerText = "No results";
             }

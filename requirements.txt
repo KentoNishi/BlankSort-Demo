@@ -2,4 +2,4 @@ nltk>=3.4.5
 numpy>=1.17.0
 sqlitedict>=1.6.0
 requests>=2.22.0
-blanksort>=0.0.2
+blanksort>=0.0.3

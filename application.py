@@ -2,6 +2,7 @@
 from flask import Flask, request, jsonify
 import json
 import os
+import blanksort
 
 app = Flask(__name__, static_url_path="")
 algo = None
@@ -26,13 +27,13 @@ def getArticles():
         return jsonify(data)
 
 
-# @app.before_first_request
+@app.before_first_request
 def preload():
     global algo
-    import blanksort
-
     algo = blanksort.BlankSort()
 
+
+preload()
 
 if __name__ == "__main__":
     app.run()
