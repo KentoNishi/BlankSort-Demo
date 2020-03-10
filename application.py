@@ -27,13 +27,11 @@ def getArticles():
         return jsonify(data)
 
 
-@app.before_first_request
+# @app.before_first_request
 def preload():
     global algo
     algo = blanksort.BlankSort()
 
-
-preload()
 
 if __name__ == "__main__":
     app.run()
